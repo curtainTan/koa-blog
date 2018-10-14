@@ -1,0 +1,11 @@
+{
+  "apps": [
+    {
+      "name": "demo",
+      "script": "./bin/www",
+      "watch": ["server","app.js","public"],
+      "ignore_watch": ["node_modules"],
+      "log_date_format": "YYYY-MM=DD HH:mm:ss"
+    }
+  ]
+}
