@@ -5,13 +5,10 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
-const jwt = require('koa-jwt')
+
 const index = require('./routes/index')
-const auth = require('./routes/auth')
 const article = require('./routes/article')
-const convert = require('koa-convert')
-
-
+const auth = require('./routes/auth')
 
 const cors = require('koa2-cors')
 
@@ -24,21 +21,14 @@ app.use(bodyparser({
 }))
 app.use(json())
 app.use(logger())
+app.use(require('koa-static')(__dirname + '/public'))
+
 app.use(views(__dirname + '/views', {
   extension: 'pug'
 }))
 
+
 app.use(cors())
-
-
-// const secret = "tan"
-
-
-// app.use( jwt({
-//   secret,
-// }).unless({
-//   path: [/\/login/,/\/register/]
-// }) )
 
 // logger
 app.use(async (ctx, next) => {
@@ -48,25 +38,20 @@ app.use(async (ctx, next) => {
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
 
-app.use( convert(require('koa-static')(__dirname + '/public')))
-
 // routes
 app.use(index.routes(), index.allowedMethods())
-app.use(auth.routes(), auth.allowedMethods())
 app.use(article.routes(), article.allowedMethods())
+app.use(auth.routes(), auth.allowedMethods())
 
 
-
+// error-handling
 app.on('error', (err, ctx) => {
   console.error('server error', err, ctx)
 });
 
-
-
 // module.exports = app
 
-app.listen(3000,()=>{
-  console.log('你正在监听3000接口')
+
+app.listen( 3000, ()=> {
+    console.log('你正在监听3000端口')
 })
-
-

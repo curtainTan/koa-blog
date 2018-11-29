@@ -1,11 +1,7 @@
-
-
-
 const router = require('koa-router')()
-const auth = require('../controller/user.js')
+const auth = require('../controller/auth')
 const multer = require('koa-multer')
 router.prefix('/auth')
-
 
 
 var storage = multer.diskStorage({
@@ -23,28 +19,17 @@ var upload = multer({ storage: storage })
 
 
 
-
-
-router.get('/user/:id', auth.getUserInfo)
 router.post('/login', auth.postUser)
 router.post('/register', auth.register)
 router.post('/autoLogin', auth.autoLogin)
 router.post('/updata', auth.updata)
 router.post('/headImg', upload.single('headImg') , auth.upHeadImg)
+router.post('/setBg', upload.single('bg') , auth.setBg)
+router.post('/getAllLike', auth.getAllLike)
+router.post('/setDefBg', auth.setDefaultBg)
+router.post('/getOne', auth.getOne)
+
 
 
 
 module.exports = router
-
-
-
-
-
-
-
-
-
-
-
-
-
