@@ -28,8 +28,11 @@ router.post('/setBg', upload.single('bg') , auth.setBg)
 router.post('/getAllLike', auth.getAllLike)
 router.post('/setDefBg', auth.setDefaultBg)
 router.post('/getOne', auth.getOne)
-
-
-
+//获取七牛
+router.get('/QnSetBg', auth.QnSetBg)
+router.get('/QnHeadImg', auth.QnHeadImg)
+//设置七牛图片
+router.post('/QnAfSetBg', auth.AfsetBg)
+router.post('/QnAfHeadImg', auth.setHeadImg)
 
 module.exports = router

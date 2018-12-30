@@ -1,6 +1,8 @@
 const user = require('../lib/mysql')
 const jwt = require('jsonwebtoken')
 const moment = require('moment')
+const qn = require('./qn')
+
 
 const secret = "tan"    //秘钥
 
@@ -44,8 +46,11 @@ const register = async ctx => {
 //登录
 const postUser = async ctx => {
     const data = ctx.request.body
-    const userInfo = await user.findUser(data.user)
-    if(userInfo[0] !== null){
+    var userInfo = await user.findUser(data.user)
+    console.log('------------------登录用户信息-------------------')
+    console.log( userInfo )
+    console.log( userInfo.length )
+    if(userInfo.length !== 0){
         // if(await bcrypt.compare(data.psd, userInfo.psw)){
         if(  userInfo[0].psw === data.psw  ){
             ctx.status = 200
@@ -103,7 +108,7 @@ const autoLogin = async ctx => {
             var data = decoded.data
             const userInfo = await user.findUser(data.name)
             console.log( userInfo )
-            if(userInfo[0] !== null){
+            if(userInfo.length !== 0){
                 const userToken = {
                     name : userInfo[0].user_name,
                     id : userInfo[0].id
@@ -159,16 +164,47 @@ const upHeadImg = async ctx => {
         headImg : headImg
     }
 }
+//获取token
+const QnHeadImg = async ctx => {
+    let key = 'headImg/' + Date.now() + '.jpg'
+    var token = await qn( key )
+    ctx.body = {
+        token : token
+    }
+}
+//设置头像
+const setHeadImg = async ctx =>{
+    console.log( ctx.request.body )
+    var name = ctx.request.body.user
+    var headImg = ctx.request.body.headImg
+    const success = await user.headImg( [headImg, name] )
+    console.log(success)
+    ctx.body = {
+        success : success,
+        headImg : headImg
+    }
+}
 //设置背景图片
 const setBg = async ctx => {
     // var bgimg = "http://localhost:3000/headImg/" + ctx.req.file.filename
     let bgimg = "http://www.curtaintan.club/headImg/" + ctx.req.file.filename
-
-    console.log( '----------------------设置背景图片的信息--------------------------------' )
-    console.log( ctx.req.body )
-    console.log( ctx.req.file )
-
-    var username = ctx.req.body.user
+    var username = ctx.request.body.user
+    let success = await user.setBg( username, bgimg )
+    ctx.body = {
+        success : success,
+        bgImg : bgimg
+    }
+}
+const QnSetBg = async ctx => {
+    let key = 'bg/' + Date.now() + '.jpg'
+    var token = await qn( key )
+    ctx.body = {
+        token : token
+    }
+}
+const AfsetBg = async ctx => {
+    var username = ctx.request.body.user
+    var bgimg = ctx.request.body.bgimg
     let success = await user.setBg( username, bgimg )
     ctx.body = {
         success : success,
@@ -180,7 +216,7 @@ const setBg = async ctx => {
 const setDefaultBg = async ctx => {
     const data = ctx.request.body
     if( data.num === 1 ){
-        var bgimg = "http://www.curtaintan.club/bg/2.jpg"
+        var bgimg = "http://curtaintan.club/bg/1546081994339.jpg"
         let success = await user.setBg( data.user, bgimg )
         ctx.body = {
             success : success,
@@ -188,7 +224,7 @@ const setDefaultBg = async ctx => {
         }
     }else{
         if( data.num === 2 ){
-            var bgimg = "http://www.curtaintan.club/bg/4.jpg"
+            var bgimg = "http://curtaintan.club/4.jpg"
             let success = await user.setBg( data.user, bgimg )
             ctx.body = {
                 success : success,
@@ -243,9 +279,6 @@ const getOne = async ctx => {
 
 
 
-
-
-
 module.exports = {
     register,
     postUser,
@@ -255,7 +288,11 @@ module.exports = {
     setBg,
     getAllLike,
     setDefaultBg,
-    getOne
+    getOne,
+    QnSetBg,
+    setHeadImg,
+    QnHeadImg,
+    AfsetBg
 }
 
 

@@ -1,5 +1,14 @@
 const article = require('../lib/mysql')
 const moment = require('moment')
+const qn = require('./qn')
+// const qn = require('qn')
+// var client = qn.create({
+//     accessKey: 'tGXajI5JmN_znlB3zhh1b3RQQZk0NMUcmX7KRqMa',
+//     secretKey: 'uzbZ0ocu3cFnHAcNCOK0hCI1McwE0Hj3ik1_qemR',
+//     bucket: 'curtain',
+//     origin: "http://curtaintan.club"
+// })
+
 
 
 
@@ -7,6 +16,18 @@ function getDate(){
     return moment().format('YYYY-MM-DD HH:mm:ss')
 }
 
+
+//获取token
+const getQnToken = async ctx => {
+    var key = 'article/' + Date.now() + '.jpg'
+    var token = await qn( key )
+    console.log('----------getQN-----------')
+    console.log( token )
+    ctx.body = {
+        success : true,
+        token : token
+    }
+}
 
 //按类别获取文章列表并分页
 const getLabelList = async ctx => {
@@ -30,7 +51,7 @@ const getLabelList = async ctx => {
     ctx.body = {
         success : true,
         result : result,
-        count : count[0].count
+        count : count[0].count,
     }
 }
 //上传文章
@@ -174,7 +195,40 @@ const like = async ctx => {
         like :like[0].count
     }
 }
+//上传图片
+// const uploadImg = (ctx, next ) => {
+//     var filePath = './public/articleImg/' + ctx.req.files[0].filename
+//     console.log( '--------------文件路径---------------------' )
+//     console.log( filePath )
+//     new Promise( ( res, rej ) => {
+//         client.uploadFile( filePath, { key : `/artImg/${ctx.req.files[0].filename}` }, function( err , result ){
+//             console.log('---------------上传后-------------------')
+//             res( result )
+//         } )
+//     } ).then( res => {
+//             console.log('---------------上传-------------------')
+//             console.log( res )
+//             ctx.body = {
+//                 success : true,
+//                 imgUrl : `http://curtaintan.club/artImg/${ctx.req.files[0].filename}`
+//             }
+//     } )
 
+    
+    // var filePath = './public/articleImg/' + ctx.req.files[0].filename
+    // console.log( '--------------文件路径---------------------' )
+    // console.log( filePath )
+    // setTimeout( ()=> {
+    //     ctx.body = {
+    //         success : true,
+    //         imgUrl : `http://curtaintan.club/artImg/${ctx.req.files[0].filename}`
+    //     }
+    // } )
+    // client.uploadFile( filePath, { key : `/artImg/${ctx.req.files[0].filename}` }, function( err , result ){
+    //     console.log('---------------上传后-------------------')
+    //     console.log( result )
+    // } )
+// }
 
 
 
@@ -187,8 +241,40 @@ module.exports = {
     updateArticle,
     insertDis,
     disPage,
-    like
+    like,
+    getQnToken
 }
+
+
+
+
+// //base64方式
+// router.post( '/asd', async ctx => {
+//     var imgData = ctx.request.body.dat
+//     var fileName = Date.now() + '.jpg'
+//     var filePath = './image/' + fileName
+//     var pathtest = './public/headImg/1536507967236.png'
+//     var dataBuffer = new Buffer( imgData, 'base64' )
+//     try {
+//         fs.writeFile(filePath, dataBuffer, function (err) {
+//             if (err) {
+//                 console.log( err )
+//             } else {
+//                 client.uploadFile(pathtest, {key: `/avatar/${fileName}`}, function (err1, result) {
+//                     console.log( filePath )
+//                     console.log('---------------上传后-------------------')
+//                     console.log( result )
+                    
+//                     // 上传之后删除本地文件
+//                     fs.unlinkSync(filePath);
+//                 });
+//             }
+//         })
+//     } catch (err) {
+//         console.log('-----------上传出错---------------')
+//         console.log( err )
+//     }
+// } )
 
 
 

@@ -1,14 +1,14 @@
 const router = require('koa-router')()
 const article = require('../controller/article.js')
 const multer = require('koa-multer')
-router.prefix('/article')
 
+router.prefix('/article')
 
 
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'public/test') 
+        cb(null, 'public/articleImg') 
     },
     filename: (req, file , cb) => {
         var fileForm = (file.originalname).split('.')
@@ -19,16 +19,22 @@ var upload = multer({ storage: storage })
 
 
 
+// //三种方式上传图片
+// router.post('/upImage', upload.any(), article.uploadImg )
+
+//获取七牛云的token
+router.get( '/getToken', article.getQnToken )
 
 //上传图片
-router.post('/upImage',  upload.any() , ctx => {
-    console.log('有文件上传')
+router.post('/upImage', upload.any(), async ctx => {
     ctx.body = {
         success : true,
-        // imgUrl : "http://localhost:3000/test/" + ctx.req.files[0].filename
-        imgUrl : "http://www.curtaintan.club/test/" + ctx.req.files[0].filename
+        // imgUrl : "http://localhost:3000/articleImg/" + ctx.req.files[0].filename
+        imgUrl : "http://www.curtaintan.club/articleImg/" + ctx.req.files[0].filename
     }
 } )
+
+
 //不同类型文章的分页
 router.get( '/pageList/:label/:page', article.getLabelList)
 
@@ -38,7 +44,6 @@ router.post('/upArticle', article.uparticle)
 router.post('/updateArt', article.updateArticle)
 //获取所有自己的文章
 router.get('/getArticleByUser/:user/:page/:caogao', article.getArticle)
-
 
 //不同类型文章的分页
 router.get( '/pageList/:label/:page', article.getLabelList)
@@ -52,9 +57,6 @@ router.post( '/postDis', article.insertDis )
 router.get( '/discuss/:id/:page', article.disPage )
 //喜欢
 router.post( '/like', article.like )
-
-
-
 
 
 

@@ -17,6 +17,9 @@ onerror(app)
 
 // middlewares
 app.use(bodyparser({
+  formLimit: '3mb',
+  textLimit: '3mb',
+  jsonLimit: '3mb',
   enableTypes:['json', 'form', 'text']
 }))
 app.use(json())
@@ -27,10 +30,9 @@ app.use(views(__dirname + '/views', {
   extension: 'pug'
 }))
 
-
 app.use(cors())
 
-// logger
+// 打印日志
 app.use(async (ctx, next) => {
   const start = new Date()
   await next()
@@ -38,13 +40,13 @@ app.use(async (ctx, next) => {
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
 
-// routes
+// 路由
 app.use(index.routes(), index.allowedMethods())
 app.use(article.routes(), article.allowedMethods())
 app.use(auth.routes(), auth.allowedMethods())
 
 
-// error-handling
+// 错误处理
 app.on('error', (err, ctx) => {
   console.error('server error', err, ctx)
 });
