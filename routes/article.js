@@ -19,6 +19,9 @@ var upload = multer({ storage: storage })
 
 
 
+
+
+
 // //三种方式上传图片
 // router.post('/upImage', upload.any(), article.uploadImg )
 
@@ -35,15 +38,13 @@ router.post('/upImage', upload.any(), async ctx => {
 } )
 
 
-//不同类型文章的分页
-router.get( '/pageList/:label/:page', article.getLabelList)
-
 //保存文章
 router.post('/upArticle', article.uparticle)
 //修改文章
 router.post('/updateArt', article.updateArticle)
 //获取所有自己的文章
 router.get('/getArticleByUser/:user/:page/:caogao', article.getArticle)
+
 
 //不同类型文章的分页
 router.get( '/pageList/:label/:page', article.getLabelList)

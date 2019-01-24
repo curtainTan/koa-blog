@@ -9,6 +9,7 @@ const logger = require('koa-logger')
 const index = require('./routes/index')
 const article = require('./routes/article')
 const auth = require('./routes/auth')
+const admin = require('./routes/admin')
 
 const cors = require('koa2-cors')
 
@@ -44,7 +45,7 @@ app.use(async (ctx, next) => {
 app.use(index.routes(), index.allowedMethods())
 app.use(article.routes(), article.allowedMethods())
 app.use(auth.routes(), auth.allowedMethods())
-
+app.use(admin.routes(), admin.allowedMethods())
 
 // 错误处理
 app.on('error', (err, ctx) => {

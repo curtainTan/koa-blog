@@ -196,7 +196,7 @@ const setBg = async ctx => {
     }
 }
 const QnSetBg = async ctx => {
-    let key = 'bg/' + Date.now() + '.jpg'
+    let key = Date.now() + '.jpg'
     var token = await qn( key )
     ctx.body = {
         token : token
